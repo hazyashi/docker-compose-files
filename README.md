@@ -1,2 +1,1 @@
-# docker-compose-files
-this repository exists to backup docker compose files incase my unraid server explodes
+you can take the compose files, i dont really care lmao
