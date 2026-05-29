@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+    ac:
+        container_name: copyparty
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_HOSTNAME={placeholder}
+            - HOST_CONTAINERNAME=copyparty
+            - PUID=1000
+            - GUID=100
+            - LD_PRELOAD=/usr/lib/libmimalloc-secure.so.NOPE
+            - PYTHONUNBUFFERED=1
+            - CA_TS_FALLBACK_DIR=/w
+        ports:
+            - '3923:3923/tcp'
+        volumes:
+            - '/mnt/user/{placeholder}:/w:rw'
+
+        user: '099:100'
+        image: 'copyparty/ac:latest'

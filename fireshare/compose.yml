@@ -1,0 +1,24 @@
+services:
+  fireshare:
+    container_name: fireshare
+    image: shaneisrael/fireshare:develop
+    restart: unless-stopped
+    ports:
+      - 8398:80
+    volumes:
+      - /mnt/user/appdata/fireshare/data:/data
+      - /mnt/user/appdata/fireshare/processed:/processed
+      - /mnt/user/fireshare/videos:/videos
+      - /mnt/user/fireshare/images:/images
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=@IxtjUcM6oRRTba2Ejwk4pDI9 #please change this
+      - SECRET_KEY=randomstringofbuhiswrittenherex0x
+      - MINUTES_BETWEEN_VIDEO_SCANS=1  #how often should the system scan?
+      - PUID=1000 #change this to match your server settings
+      - PGID=100 #change this to match your server settings
+      - TZ=America/Los_Angeles
+      - ENABLE_TRANSCODING=true
+      - TRANSCODE_GPU=false
+    devices:
+      - /dev/dri:/dev/dri  # If using Intel QuickSync or VAAPI
