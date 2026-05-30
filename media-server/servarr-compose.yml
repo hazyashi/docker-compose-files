@@ -1,0 +1,93 @@
+version: '3.3'
+services:
+# i based this compose file off trash guides
+    sonarr:
+    # sonarr 
+        image: lscr.io/linuxserver/sonarr
+        container_name: sonarr
+        network_mode: servarr
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=sonarr
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - UMASK={placeholder}
+        ports:
+            - '8989:8989/tcp'
+        volumes:
+            - /mnt/user/servarr/:/data
+            - /mnt/user/appdata/sonarr:/config
+
+    radarr:
+    # radarr
+        image: lscr.io/linuxserver/radarr
+        container_name: radarr
+        network_mode: servarr
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=radarr
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - UMASK={placeholder}
+        ports:
+            - '7878:7878/tcp'
+        volumes:
+            - /mnt/user/servarr/:/data
+            - /mnt/user/appdata/radarr:/config
+    lidarr:
+    # lidarr
+        image: lscr.io/linuxserver/lidarr
+        container_name: lidarr
+        network_mode: servarr
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=lidarr
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - UMASK={placeholder}
+        ports:
+            - '8686:8686/tcp'
+        volumes:
+            - /mnt/user/servarr/:/data
+            - /mnt/user/appdata/lidarr:/config
+
+    prowlarr:
+    # prowlarr
+        image: lscr.io/linuxserver/prowlarr
+        container_name: prowlarr
+        network_mode: servarr
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=prowlarr
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - UMASK={placeholder}
+        ports:
+            - '9696:9696/tcp'
+        volumes:
+            - /mnt/user/appdata/prowlarr:/config
+
+    flaresolverr:
+    # flaresolverr
+        image: flaresolverr/flaresolverr
+        container_name: flaresolverr
+        network_mode: servarr
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=flaresolverr
+            - LOG_LEVEL=info
+            - TZ=UTC
+        ports:
+            - '8191:8191/tcp'       
+        
+
+
+       
+
+    
+    

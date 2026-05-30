@@ -1,0 +1,159 @@
+version: '3.3'
+services:
+    pms-docker:
+        image: plexinc/pms-docker
+        container_name: Plex-Media-Server
+        network_mode: host
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=Plex-Media-Server
+            - 'PLEX_CLAIM=Insert Token from https://plex.tv/claim'
+            - PLEX_UID=${PUID}
+            - PLEX_GID=${PGID}
+            - VERSION=latest
+        volumes:
+            - /mnt/user/{placeholder}/media/plex/:/transcode
+            - /mnt/user/{placeholder}/media:/data/media
+            - /mnt/user/servarr/media/:/servarr/media
+            - /mnt/user/appdata/Plex-Media-Server:/config
+        devices:
+            - /dev/dri
+
+    jellyfin:
+        image: lscr.io/linuxserver/jellyfin
+        container_name: jellyfin
+        network_mode: jellyfin
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=jellyfin
+            - 'JELLYFIN_PublishedServerUrl=http://{IP}'
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - UMASK={placeholder}
+        ports:
+            - '8096:8096/tcp'
+            - '8920:8920/tcp'
+            - '7359:7359/udp'
+            - '1900:1900/udp'
+        volumes:
+            - /mnt/user/{placeholder}/media/:/data/media
+            - /mnt/user/servarr/media/:/servarr/media
+            - /mnt/user/appdata/jellyfin:/config
+        devices:
+            - /dev/dri
+
+    navidrome:
+        image: deluan/navidrome
+        container_name: navidrome
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=navidrome
+            - ND_SCANSCHEDULE=1m
+            - ND_LOGLEVEL=info
+            - ND_SESSIONTIMEOUT=24h
+            - ND_BASEURL=
+            - ND_IMAGECACHESIZE=200MB
+            - ND_LASTFM_APIKEY={placeholder}
+            - ND_LASTFM_SECRET={placeholder}
+            - 'ND_AGENTS=apple-music,lastfm,deezer'
+            - 'ND_TAGS_ARTIST_SPLIT=/, / , feat. , ft. , & ,'
+            - ND_SCANNER.GROUPALBUMRELEASES=true
+        ports:
+            - '4533:4533/tcp'
+        volumes:
+            - /mnt/user/appdata/navidrome:/data
+            - /mnt/user/{placeholder}/media/music/:/data/music
+            - /mnt/user/servarr/media/music:/servarr/music
+
+    picard:
+        image: mikenye/picard
+        container_name: MusicBrainz-Picard
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=MusicBrainz-Picard
+            - DISPLAY_WIDTH=1280
+            - DISPLAY_HEIGHT=768
+            - USER_ID=99
+            - GROUP_ID=100
+        ports:
+            - '5800:5800/tcp'
+        volumes:
+            - /mnt/user/appdata/MusicBrainz-Picard:/config
+            - /mnt/user/{placeholder}/media/music/:/data/storage
+            - /mnt/user/servarr/media/music:/servarr/storage2
+
+    seerr:
+    # seerr
+        image: 'ghcr.io/seerr-team/seerr:latest'
+        container_name: Seerr
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=Seerr
+            - LOG_LEVEL=debug
+            - PORT=5055
+            - CA_TS_FALLBACK_DIR=/app/config
+        ports:
+            - '5055:5055/tcp'
+        volumes:
+            - /mnt/user/appdata/seerr:/app/config
+            - /mnt/user/appdata/seerr/logs:/app/config/logs
+        user: '${PUID}:${GUID}'  
+
+    tautulli:
+        image: tautulli/tautulli
+        container_name: tautulli
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=tautulli
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=UTC
+        ports:
+            - '8181:8181/tcp'
+        volumes:
+            - /mnt/user/appdata/tautulli:/config
+
+    anchorr:
+        image: 'nairdah/anchorr:latest'
+        container_name: Anchorr
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=Anchorr
+            - WEBHOOK_PORT=8282
+            - NODE_ENV=production
+            - BIND_HOST=0.0.0.0
+            - CA_TS_FALLBACK_DIR=/usr/src/app/config
+        ports:
+            - '8282:8282/tcp'
+        volumes:
+            - /mnt/user/appdata/anchorr:/usr/src/app/config
+
+    wizarr:
+        image: ghcr.io/wizarrrr/wizarr
+        container_name: Wizarr
+        network_mode: bridge
+        environment:
+            - TZ=America/Los_Angeles
+            - HOST_OS=Unraid
+            - HOST_CONTAINERNAME=Wizarr
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - DISABLE_BUILTIN_AUTH=false
+            - CA_TS_FALLBACK_DIR=/data/database
+        ports:
+            - '5690:5690/tcp'
+        volumes:
+            - /mnt/user/appdata/wizarr/database:/data/database
+        restart: unless-stopped
